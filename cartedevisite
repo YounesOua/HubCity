@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mohamed-Amine Drablia – HubCity</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --blue:   #212c90;
+      --orange: #fd401a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      font-family: 'Abel', sans-serif;
+      background: #080c2e;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── AMBIENT GLOWS ── */
+    .glow-1 { position:fixed; pointer-events:none; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(33,44,144,0.65) 0%, transparent 70%); top:-180px; left:-180px; }
+    .glow-2 { position:fixed; pointer-events:none; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle, rgba(253,64,26,0.4) 0%, transparent 70%); bottom:-140px; right:-140px; }
+    .glow-3 { position:fixed; pointer-events:none; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle, rgba(80,100,255,0.2) 0%, transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); }
+
+    /* ── CIRCUIT BG ── */
+    .circuit-bg { position:fixed; inset:0; pointer-events:none; opacity:0.1; width:100%; height:100%; }
+
+    /* ── CARD WRAPPER (gradient border) ── */
+    .card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 900px;
+      border-radius: 28px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(253,64,26,0.22) 40%, rgba(33,44,144,0.18) 100%);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.1),
+        0 40px 100px rgba(0,0,0,0.6),
+        0 0 80px rgba(253,64,26,0.12);
+      animation: rise .7s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes rise {
+      from { opacity:0; transform:translateY(40px) scale(.96); }
+      to   { opacity:1; transform:translateY(0) scale(1); }
+    }
+
+    /* ── CARD INNER ── */
+    .card-inner {
+      border-radius: 26px;
+      overflow: hidden;
+      background: rgba(8, 12, 46, 0.6);
+      backdrop-filter: blur(32px) saturate(1.5);
+      -webkit-backdrop-filter: blur(32px) saturate(1.5);
+
+      /* ── DESKTOP: 2 colonnes ── */
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      grid-template-rows: auto;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* dot pattern top-right corner */
+    .left::before {
+      content: '';
+      position: absolute;
+      top: -50px; right: -50px;
+      width: 220px; height: 220px;
+      background-image: radial-gradient(circle, rgba(253,64,26,0.5) 1.8px, transparent 1.8px);
+      background-size: 13px 13px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    /* glass shine top */
+    .left::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    }
+
+    /* ── LOGO ── */
+    .logo-wrap {
+      padding: 32px 28px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+      z-index: 2;
+    }
+
+    .logo {
+      font-size: 52px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: #fff;
+    }
+    .logo em { color: var(--orange); font-style: normal; }
+
+    .logo-bar {
+      display: block;
+      width: 54px; height: 3px;
+      background: var(--orange);
+      border-radius: 99px;
+      margin: 8px 0 7px;
+      box-shadow: 0 0 12px rgba(253,64,26,0.7);
+    }
+
+    .tagline {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.38);
+    }
+
+    /* ── AVATAR + NAME ── */
+    .profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 24px 24px;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+
+    .avatar-ring {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      padding: 3px;
+      background: conic-gradient(var(--orange) 0deg, rgba(255,255,255,0.1) 160deg, var(--blue) 280deg, var(--orange) 360deg);
+      box-shadow: 0 0 28px rgba(253,64,26,0.45), 0 0 56px rgba(33,44,144,0.3);
+      animation: spin-ring 6s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin-ring { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+    .avatar-inner {
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 900;
+      color: #fff; letter-spacing: 0.04em;
+      overflow: hidden;
+    }
+    .avatar-inner img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+    .profile-name {
+      font-size: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1.15;
+      color: #fff;
+      text-align: center;
+    }
+    .profile-name em { color: rgba(150,165,255,0.9); font-style:normal; display:block; }
+
+    .profile-role {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      text-align: center;
+      text-shadow: 0 0 14px rgba(253,64,26,0.55);
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .stat { flex:1; text-align:center; padding:12px 6px; position:relative; }
+    .stat+.stat::before { content:''; position:absolute; left:0; top:18%; bottom:18%; width:1px; background:rgba(255,255,255,0.08); }
+    .stat-val { font-size:18px; font-weight:700; color:#fff; }
+    .stat-val span { color:var(--orange); }
+    .stat-lbl { font-size:9.5px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.32); margin-top:2px; }
+
+    /* ── RIGHT PANEL ── */
+    .right {
+      display: flex;
+      flex-direction: column;
+      padding: 28px 26px 22px;
+      gap: 0;
+      position: relative;
+    }
+
+    .right::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    }
+
+    .right-title {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 14px;
+    }
+
+    /* ── CONTACTS ── */
+    .contacts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 13px;
+      border-radius: 13px;
+      background: rgba(255,255,255,0.048);
+      border: 1px solid rgba(255,255,255,0.07);
+      text-decoration: none;
+      color: #fff;
+      transition: background .18s, border-color .18s, transform .15s;
+      cursor: pointer;
+    }
+    .row:hover { background:rgba(255,255,255,0.09); border-color:rgba(253,64,26,0.38); transform:translateX(4px); }
+
+    .icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: rgba(33,44,144,0.85);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(33,44,144,0.4);
+    }
+    .icon.orange { background:rgba(180,42,12,0.75); box-shadow:0 0 10px rgba(253,64,26,0.35); }
+    .icon svg { width:15px; height:15px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+
+    .info { flex:1; min-width:0; }
+    .lbl { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.32); line-height:1; margin-bottom:2px; }
+    .val { font-size:14px; color:rgba(255,255,255,0.88); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    .arrow { color:rgba(255,255,255,0.18); font-size:18px; transition:color .2s; flex-shrink:0; }
+    .row:hover .arrow { color:var(--orange); }
+
+    /* ── SAVE BUTTON ── */
+    .btn-wrap { margin-top: 18px; }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 13px;
+      font-family: 'Abel', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--orange) 0%, #b02e10 100%);
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(253,64,26,0.42), inset 0 1px 0 rgba(255,255,255,0.18);
+      transition: transform .15s, box-shadow .2s;
+    }
+    .btn::before {
+      content:''; position:absolute;
+      top:0; left:-100%; width:60%; height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+      transition:left .5s;
+    }
+    .btn:hover::before { left:160%; }
+    .btn:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(253,64,26,0.55), inset 0 1px 0 rgba(255,255,255,0.18); }
+    .btn:active { transform:translateY(0); }
+    .btn svg { width:17px; height:17px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+
+    /* footer inside right */
+    .right-footer {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.18);
+      text-transform: uppercase;
+    }
+    .right-footer a { color:rgba(150,165,255,0.4); text-decoration:none; }
+    .right-footer a:hover { color:var(--orange); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(8,12,46,0.95);
+      color: #fff;
+      font-family: 'Abel', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      padding: 11px 26px;
+      border-radius: 99px;
+      border: 1px solid rgba(253,64,26,0.38);
+      box-shadow: 0 0 20px rgba(253,64,26,0.22);
+      opacity: 0;
+      transition: all .4s cubic-bezier(.22,1,.36,1);
+      pointer-events: none;
+      z-index: 999;
+      white-space: nowrap;
+      backdrop-filter: blur(12px);
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* ══════════════════════════════════════════
+       MOBILE  ≤ 640px  →  une seule colonne
+    ══════════════════════════════════════════ */
+    @media (max-width: 640px) {
+      body { padding: 16px 12px; align-items: flex-start; }
+
+      .card { max-width: 100%; border-radius: 22px; }
+
+      .card-inner {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+      }
+
+      .left {
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.07);
+      }
+
+      /* Sur mobile : profil horizontal (avatar + nom côte à côte) */
+      .profile {
+        flex-direction: row;
+        align-items: center;
+        padding: 20px 20px 18px;
+        gap: 16px;
+      }
+
+      .avatar-ring { width:74px; height:74px; }
+      .avatar-inner { font-size:20px; }
+
+      .profile-name { font-size:16px; text-align:left; }
+      .profile-name em { display:inline; }
+      .profile-role { text-align:left; font-size:10px; }
+
+      .logo-wrap { padding:24px 20px 18px; }
+      .logo { font-size:40px; }
+
+      .right { padding:20px 16px 18px; }
+      .btn-wrap { margin-top:14px; }
+
+      .stat-val { font-size:15px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-1"></div>
+<div class="glow-2"></div>
+<div class="glow-3"></div>
+
+<svg class="circuit-bg" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="rgba(100,130,255,1)" stroke-width="0.9" fill="none">
+    <path d="M0 80 H140 V160 H260 V80 H400"/>
+    <path d="M400 80 H560 V200 H700"/>
+    <path d="M700 200 H860 V100 H1000 V200 H1200"/>
+    <path d="M0 300 H100 V400 H240 V300 H380"/>
+    <path d="M380 300 H500 V420 H640"/>
+    <path d="M640 420 H780 V300 H920 V420 H1200"/>
+    <path d="M200 500 H340 V600 H500 V500 H660"/>
+    <path d="M660 500 H800 V580 H960 V500 H1100"/>
+    <circle cx="140"  cy="80"  r="3.5" fill="rgba(100,130,255,0.9)"/>
+    <circle cx="400"  cy="80"  r="3.5" fill="rgba(253,64,26,0.9)"/>
+    <circle cx="700"  cy="200" r="3.5" fill="rgba(100,130,255,0.9)"/>
+    <circle cx="1000" cy="100" r="3.5" fill="rgba(253,64,26,0.9)"/>
+    <circle cx="240"  cy="300" r="3"   fill="rgba(100,130,255,0.7)"/>
+    <circle cx="500"  cy="420" r="3"   fill="rgba(253,64,26,0.7)"/>
+    <circle cx="780"  cy="300" r="3"   fill="rgba(100,130,255,0.7)"/>
+    <circle cx="340"  cy="500" r="3"   fill="rgba(253,64,26,0.7)"/>
+    <circle cx="800"  cy="580" r="3"   fill="rgba(100,130,255,0.7)"/>
+    <!-- extra detail lines -->
+    <path d="M260 160 V260 H380 V160"/>
+    <path d="M860 100 V260 H980"/>
+    <path d="M100 400 V480 H200"/>
+    <path d="M920 420 V500 H1020 V420"/>
+  </g>
+</svg>
+
+<div class="card">
+  <div class="card-inner">
+
+    <!-- ══ LEFT PANEL ══ -->
+    <div class="left">
+
+      <div class="logo-wrap">
+        <div class="logo">Hub<em>City</em></div>
+        <span class="logo-bar"></span>
+        <div class="tagline">La croisée de l'insertion et du networking</div>
+      </div>
+
+      <div class="profile">
+        <div class="avatar-ring">
+          <div class="avatar-inner">MA</div>
+        </div>
+        <div>
+          <div class="profile-name"><em>Drablia</em> Mohamed&#8209;Amine</div>
+          <div class="profile-role">✦ Fondateur de HubCity</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-val">2<span>+</span></div>
+          <div class="stat-lbl">Ateliers</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val"><span>#</span>1</div>
+          <div class="stat-lbl">Réseau local</div>
+        </div>
+        <div class="stat">
+          <div class="stat-val">100<span>%</span></div>
+          <div class="stat-lbl">Gratuit</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ RIGHT PANEL ══ -->
+    <div class="right">
+
+      <div class="right-title">Coordonnées</div>
+
+      <div class="contacts">
+
+        <a class="row" href="tel:+33652790812">
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.08 10a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 2 1.25h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L6.09 9a16 16 0 0 0 5.91 5.91l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="info">
+            <div class="lbl">Téléphone</div>
+            <div class="val">06 52 79 08 12</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+        <a class="row" href="mailto:contact@hub-city.fr">
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="info">
+            <div class="lbl">Email pro</div>
+            <div class="val">contact@hub-city.fr</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+        <a class="row" href="mailto:mohamed.drablia@outlook.com">
+          <div class="icon orange">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="info">
+            <div class="lbl">Email personnel</div>
+            <div class="val">mohamed.drablia@outlook.com</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+        <a class="row" href="https://hub-city.fr" target="_blank">
+          <div class="icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <div class="info">
+            <div class="lbl">Site web</div>
+            <div class="val">hub-city.fr</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+        <a class="row" href="https://www.linkedin.com/in/les-slasheurs-mohamed-amine/" target="_blank">
+          <div class="icon orange">
+            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </div>
+          <div class="info">
+            <div class="lbl">LinkedIn</div>
+            <div class="val">Mohamed-Amine Drablia</div>
+          </div>
+          <div class="arrow">›</div>
+        </a>
+
+      </div>
+
+      <div class="btn-wrap">
+        <a class="btn" href="#" onclick="saveContact(event)">
+          <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Enregistrer le contact
+        </a>
+      </div>
+
+      <div class="right-footer">
+        <a href="https://hub-city.fr" target="_blank">hub-city.fr</a> &nbsp;·&nbsp; &copy; 2025 HubCity
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Contact enregistré ✓</div>
+
+<script>
+  function saveContact(e) {
+    e.preventDefault();
+    const vcard = [
+      'BEGIN:VCARD','VERSION:3.0',
+      'FN:Mohamed-Amine Drablia',
+      'N:Drablia;Mohamed-Amine;;;',
+      'ORG:HubCity',
+      'TITLE:Fondateur',
+      'TEL;TYPE=CELL:+33652790812',
+      'EMAIL;TYPE=WORK:contact@hub-city.fr',
+      'EMAIL;TYPE=HOME:mohamed.drablia@outlook.com',
+      'URL:https://hub-city.fr',
+      'X-SOCIALPROFILE;type=linkedin:https://www.linkedin.com/in/les-slasheurs-mohamed-amine/',
+      "NOTE:La croisée de l'insertion et du networking",
+      'END:VCARD'
+    ].join('\r\n');
+    const blob = new Blob([vcard],{type:'text/vcard;charset=utf-8'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href=url; a.download='Mohamed-Amine-Drablia-HubCity.vcf';
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
+    const t=document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3000);
+  }
+</script>
+
+</body>
+</html>
