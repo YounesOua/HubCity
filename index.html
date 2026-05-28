@@ -1,543 +1,408 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mohamed-Amine Drablia – HubCity</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet"/>
-  <style>
-    :root {
-      --blue:   #212c90;
-      --orange: #fd401a;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte de Visite Digitale - Mohamed-Amine Drablia</title>
+    <style>
+        /* ===== RESET ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        /* ===== BODY ===== */
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #090710 0%, #110d22 50%, #05040a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-    html, body {
-      height: 100%;
-    }
+        /* ===== BACKGROUND : grille de points orange ===== */
+        .background-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(225, 77, 42, 0.12) 1.2px, transparent 1.2px);
+            background-size: 16px 16px;
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 1;
+            mask-image: linear-gradient(to bottom right, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+            -webkit-mask-image: linear-gradient(to bottom right, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 80%);
+        }
 
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      font-family: 'Abel', sans-serif;
-      background: #080c2e;
-      overflow-x: hidden;
-      position: relative;
-    }
+        /* ===== CARTE PRINCIPALE ===== */
+        .card-container {
+            width: 100%;
+            max-width: 620px;
+            background: linear-gradient(145deg, rgba(20, 16, 36, 0.9) 0%, rgba(11, 9, 20, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow:
+                0 30px 60px rgba(0, 0, 0, 0.6),
+                0 0 80px rgba(225, 77, 42, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 2;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+        }
 
-    /* ── AMBIENT GLOWS ── */
-    .glow-1 { position:fixed; pointer-events:none; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle, rgba(33,44,144,0.65) 0%, transparent 70%); top:-180px; left:-180px; }
-    .glow-2 { position:fixed; pointer-events:none; width:500px; height:500px; border-radius:50%; background:radial-gradient(circle, rgba(253,64,26,0.4) 0%, transparent 70%); bottom:-140px; right:-140px; }
-    .glow-3 { position:fixed; pointer-events:none; width:360px; height:360px; border-radius:50%; background:radial-gradient(circle, rgba(80,100,255,0.2) 0%, transparent 70%); top:50%; left:50%; transform:translate(-50%,-50%); }
+        /* Séparateur vertical central */
+        .card-container::after {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 45%;
+            height: 70%;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.08), transparent);
+        }
 
-    /* ── CIRCUIT BG ── */
-    .circuit-bg { position:fixed; inset:0; pointer-events:none; opacity:0.1; width:100%; height:100%; }
+        /* ===== COLONNE GAUCHE : profil ===== */
+        .profile-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-right: 10px;
+            z-index: 3;
+        }
 
-    /* ── CARD WRAPPER (gradient border) ── */
-    .card {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 900px;
-      border-radius: 28px;
-      padding: 2px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(253,64,26,0.22) 40%, rgba(33,44,144,0.18) 100%);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.1),
-        0 40px 100px rgba(0,0,0,0.6),
-        0 0 80px rgba(253,64,26,0.12);
-      animation: rise .7s cubic-bezier(.22,1,.36,1) both;
-    }
+        /* Logo HubCity */
+        .logo-container {
+            margin-bottom: 25px;
+        }
 
-    @keyframes rise {
-      from { opacity:0; transform:translateY(40px) scale(.96); }
-      to   { opacity:1; transform:translateY(0) scale(1); }
-    }
+        .logo-hub {
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+        }
 
-    /* ── CARD INNER ── */
-    .card-inner {
-      border-radius: 26px;
-      overflow: hidden;
-      background: rgba(8, 12, 46, 0.6);
-      backdrop-filter: blur(32px) saturate(1.5);
-      -webkit-backdrop-filter: blur(32px) saturate(1.5);
+        .logo-city {
+            color: #e14d2a;
+        }
 
-      /* ── DESKTOP: 2 colonnes ── */
-      display: grid;
-      grid-template-columns: 320px 1fr;
-      grid-template-rows: auto;
-    }
+        .tagline {
+            font-size: 7.5px;
+            color: #7b7699;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-top: 4px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
 
-    /* ── LEFT PANEL ── */
-    .left {
-      display: flex;
-      flex-direction: column;
-      border-right: 1px solid rgba(255,255,255,0.07);
-      position: relative;
-      overflow: hidden;
-    }
+        /* Avatar circulaire */
+        .avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
 
-    /* dot pattern top-right corner */
-    .left::before {
-      content: '';
-      position: absolute;
-      top: -50px; right: -50px;
-      width: 220px; height: 220px;
-      background-image: radial-gradient(circle, rgba(253,64,26,0.5) 1.8px, transparent 1.8px);
-      background-size: 13px 13px;
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    /* glass shine top */
-    .left::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    }
+        .avatar-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            object-position: center center;
+            position: absolute;
+            top: 10px;
+            left: 0;
+            z-index: 4;
+        }
 
-    /* ── LOGO ── */
-    .logo-wrap {
-      padding: 32px 28px 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      position: relative;
-      z-index: 2;
-    }
+        .avatar-initials {
+            font-size: 30px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 1px;
+            transform: rotate(-35deg);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
 
-    .logo {
-      font-size: 52px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: -0.03em;
-      line-height: 1;
-      color: #fff;
-    }
-    .logo em { color: var(--orange); font-style: normal; }
+        /* Nom et titre */
+        .name {
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
 
-    .logo-bar {
-      display: block;
-      width: 54px; height: 3px;
-      background: var(--orange);
-      border-radius: 99px;
-      margin: 8px 0 7px;
-      box-shadow: 0 0 12px rgba(253,64,26,0.7);
-    }
+        .firstname {
+            color: #e14d2a;
+        }
 
-    .tagline {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.38);
-    }
+        .title {
+            font-size: 8px;
+            color: #e14d2a;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 6px;
+            font-weight: 700;
+        }
 
-    /* ── AVATAR + NAME ── */
-    .profile {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 28px 24px 24px;
-      gap: 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      flex: 1;
-      position: relative;
-      z-index: 2;
-    }
+        /* ===== COLONNE DROITE : coordonnées ===== */
+        .info-side {
+            flex: 1.2;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            z-index: 3;
+        }
 
-    .avatar-ring {
-      width: 110px; height: 110px;
-      border-radius: 50%;
-      padding: 3px;
-      background: conic-gradient(var(--orange) 0deg, rgba(255,255,255,0.1) 160deg, var(--blue) 280deg, var(--orange) 360deg);
-      box-shadow: 0 0 28px rgba(253,64,26,0.45), 0 0 56px rgba(33,44,144,0.3);
-      animation: spin-ring 6s linear infinite;
-      flex-shrink: 0;
-    }
-    @keyframes spin-ring { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+        .section-title {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: #555075;
+            letter-spacing: 2px;
+            font-weight: 800;
+            margin-bottom: -4px;
+            padding-left: 4px;
+        }
 
-    .avatar-inner {
-      width: 100%; height: 100%;
-      border-radius: 50%;
-      background: var(--blue);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 28px; font-weight: 900;
-      color: #fff; letter-spacing: 0.04em;
-      overflow: hidden;
-    }
-    .avatar-inner img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+        /* Ligne de contact */
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 12px 16px;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    .profile-name {
-      font-size: 20px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      line-height: 1.15;
-      color: #fff;
-      text-align: center;
-    }
-    .profile-name em { color: rgba(150,165,255,0.9); font-style:normal; display:block; }
+        /* Icône bleue par défaut */
+        .info-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: rgba(32, 70, 138, 0.2);
+            border: 1px solid rgba(32, 70, 138, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #3b76e1;
+            flex-shrink: 0;
+            transition: all 0.25s ease;
+        }
 
-    .profile-role {
-      font-size: 11px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--orange);
-      text-align: center;
-      text-shadow: 0 0 14px rgba(253,64,26,0.55);
-    }
+        /* Icône orange pour email et LinkedIn */
+        .info-item[href^="mailto"] .info-icon,
+        .info-item[href*="linkedin"] .info-icon {
+            background: rgba(225, 77, 42, 0.1);
+            border: 1px solid rgba(225, 77, 42, 0.3);
+            color: #e14d2a;
+        }
 
-    /* ── STATS ── */
-    .stats {
-      display: flex;
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-    .stat { flex:1; text-align:center; padding:12px 6px; position:relative; }
-    .stat+.stat::before { content:''; position:absolute; left:0; top:18%; bottom:18%; width:1px; background:rgba(255,255,255,0.08); }
-    .stat-val { font-size:18px; font-weight:700; color:#fff; }
-    .stat-val span { color:var(--orange); }
-    .stat-lbl { font-size:9.5px; letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.32); margin-top:2px; }
+        .info-details {
+            display: flex;
+            flex-direction: column;
+        }
 
-    /* ── RIGHT PANEL ── */
-    .right {
-      display: flex;
-      flex-direction: column;
-      padding: 28px 26px 22px;
-      gap: 0;
-      position: relative;
-    }
+        .info-label {
+            font-size: 7.5px;
+            text-transform: uppercase;
+            color: #555075;
+            letter-spacing: 0.8px;
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
 
-    .right::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-    }
+        .info-value {
+            font-size: 13px;
+            color: #d1cfe2;
+            font-weight: 500;
+        }
 
-    .right-title {
-      font-size: 10px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.3);
-      margin-bottom: 14px;
-    }
+        /* Hover sur desktop */
+        @media (hover: hover) {
+            .info-item:hover {
+                background: rgba(255, 255, 255, 0.04);
+                border-color: rgba(225, 77, 42, 0.4);
+                transform: translateX(6px);
+            }
 
-    /* ── CONTACTS ── */
-    .contacts {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      flex: 1;
-    }
+            .info-item:hover .info-icon {
+                transform: scale(1.05);
+            }
+        }
 
-    .row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 11px 13px;
-      border-radius: 13px;
-      background: rgba(255,255,255,0.048);
-      border: 1px solid rgba(255,255,255,0.07);
-      text-decoration: none;
-      color: #fff;
-      transition: background .18s, border-color .18s, transform .15s;
-      cursor: pointer;
-    }
-    .row:hover { background:rgba(255,255,255,0.09); border-color:rgba(253,64,26,0.38); transform:translateX(4px); }
+        /* ===== FOOTER ===== */
+        .card-footer {
+            position: absolute;
+            bottom: 12px;
+            right: 20px;
+            font-size: 7px;
+            color: #403c5a;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
 
-    .icon {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: rgba(33,44,144,0.85);
-      border: 1px solid rgba(255,255,255,0.1);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      box-shadow: 0 0 10px rgba(33,44,144,0.4);
-    }
-    .icon.orange { background:rgba(180,42,12,0.75); box-shadow:0 0 10px rgba(253,64,26,0.35); }
-    .icon svg { width:15px; height:15px; fill:none; stroke:#fff; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+        /* ===== RESPONSIVE MOBILE ===== */
+        @media (max-width: 580px) {
+            .card-container {
+                flex-direction: column;
+                gap: 30px;
+                padding: 35px 25px;
+                max-width: 360px;
+            }
 
-    .info { flex:1; min-width:0; }
-    .lbl { font-size:9px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.32); line-height:1; margin-bottom:2px; }
-    .val { font-size:14px; color:rgba(255,255,255,0.88); line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+            .card-container::after {
+                display: none;
+            }
 
-    .arrow { color:rgba(255,255,255,0.18); font-size:18px; transition:color .2s; flex-shrink:0; }
-    .row:hover .arrow { color:var(--orange); }
+            .profile-side {
+                padding-right: 0;
+                width: 100%;
+            }
 
-    /* ── SAVE BUTTON ── */
-    .btn-wrap { margin-top: 18px; }
+            .info-side {
+                flex: none;
+                gap: 10px;
+            }
 
-    .btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 13px;
-      font-family: 'Abel', sans-serif;
-      font-size: 14px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      cursor: pointer;
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, var(--orange) 0%, #b02e10 100%);
-      color: #fff;
-      box-shadow: 0 6px 24px rgba(253,64,26,0.42), inset 0 1px 0 rgba(255,255,255,0.18);
-      transition: transform .15s, box-shadow .2s;
-    }
-    .btn::before {
-      content:''; position:absolute;
-      top:0; left:-100%; width:60%; height:100%;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
-      transition:left .5s;
-    }
-    .btn:hover::before { left:160%; }
-    .btn:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(253,64,26,0.55), inset 0 1px 0 rgba(255,255,255,0.18); }
-    .btn:active { transform:translateY(0); }
-    .btn svg { width:17px; height:17px; fill:none; stroke:#fff; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+            .section-title {
+                text-align: center;
+                margin-bottom: 2px;
+            }
 
-    /* footer inside right */
-    .right-footer {
-      margin-top: 14px;
-      text-align: center;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      color: rgba(255,255,255,0.18);
-      text-transform: uppercase;
-    }
-    .right-footer a { color:rgba(150,165,255,0.4); text-decoration:none; }
-    .right-footer a:hover { color:var(--orange); }
-
-    /* ── TOAST ── */
-    .toast {
-      position: fixed;
-      bottom: 28px; left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: rgba(8,12,46,0.95);
-      color: #fff;
-      font-family: 'Abel', sans-serif;
-      font-size: 13px;
-      letter-spacing: 0.08em;
-      padding: 11px 26px;
-      border-radius: 99px;
-      border: 1px solid rgba(253,64,26,0.38);
-      box-shadow: 0 0 20px rgba(253,64,26,0.22);
-      opacity: 0;
-      transition: all .4s cubic-bezier(.22,1,.36,1);
-      pointer-events: none;
-      z-index: 999;
-      white-space: nowrap;
-      backdrop-filter: blur(12px);
-    }
-    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-    /* ══════════════════════════════════════════
-       MOBILE  ≤ 640px  →  une seule colonne
-    ══════════════════════════════════════════ */
-    @media (max-width: 640px) {
-      body { padding: 16px 12px; align-items: flex-start; }
-
-      .card { max-width: 100%; border-radius: 22px; }
-
-      .card-inner {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto;
-      }
-
-      .left {
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.07);
-      }
-
-      /* Sur mobile : profil horizontal (avatar + nom côte à côte) */
-      .profile {
-        flex-direction: row;
-        align-items: center;
-        padding: 20px 20px 18px;
-        gap: 16px;
-      }
-
-      .avatar-ring { width:74px; height:74px; }
-      .avatar-inner { font-size:20px; }
-
-      .profile-name { font-size:16px; text-align:left; }
-      .profile-name em { display:inline; }
-      .profile-role { text-align:left; font-size:10px; }
-
-      .logo-wrap { padding:24px 20px 18px; }
-      .logo { font-size:40px; }
-
-      .right { padding:20px 16px 18px; }
-      .btn-wrap { margin-top:14px; }
-
-      .stat-val { font-size:15px; }
-    }
-  </style>
+            .card-footer {
+                position: relative;
+                bottom: 0;
+                right: 0;
+                text-align: center;
+                margin-top: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="glow-1"></div>
-<div class="glow-2"></div>
-<div class="glow-3"></div>
+    <!-- Fond décoratif -->
+    <div class="background-overlay"></div>
 
-<svg class="circuit-bg" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-  <g stroke="rgba(100,130,255,1)" stroke-width="0.9" fill="none">
-    <path d="M0 80 H140 V160 H260 V80 H400"/>
-    <path d="M400 80 H560 V200 H700"/>
-    <path d="M700 200 H860 V100 H1000 V200 H1200"/>
-    <path d="M0 300 H100 V400 H240 V300 H380"/>
-    <path d="M380 300 H500 V420 H640"/>
-    <path d="M640 420 H780 V300 H920 V420 H1200"/>
-    <path d="M200 500 H340 V600 H500 V500 H660"/>
-    <path d="M660 500 H800 V580 H960 V500 H1100"/>
-    <circle cx="140"  cy="80"  r="3.5" fill="rgba(100,130,255,0.9)"/>
-    <circle cx="400"  cy="80"  r="3.5" fill="rgba(253,64,26,0.9)"/>
-    <circle cx="700"  cy="200" r="3.5" fill="rgba(100,130,255,0.9)"/>
-    <circle cx="1000" cy="100" r="3.5" fill="rgba(253,64,26,0.9)"/>
-    <circle cx="240"  cy="300" r="3"   fill="rgba(100,130,255,0.7)"/>
-    <circle cx="500"  cy="420" r="3"   fill="rgba(253,64,26,0.7)"/>
-    <circle cx="780"  cy="300" r="3"   fill="rgba(100,130,255,0.7)"/>
-    <circle cx="340"  cy="500" r="3"   fill="rgba(253,64,26,0.7)"/>
-    <circle cx="800"  cy="580" r="3"   fill="rgba(100,130,255,0.7)"/>
-    <!-- extra detail lines -->
-    <path d="M260 160 V260 H380 V160"/>
-    <path d="M860 100 V260 H980"/>
-    <path d="M100 400 V480 H200"/>
-    <path d="M920 420 V500 H1020 V420"/>
-  </g>
-</svg>
+    <!-- Carte principale -->
+    <div class="card-container">
 
-<div class="card">
-  <div class="card-inner">
+        <!-- Colonne gauche : logo + avatar + nom -->
+        <div class="profile-side">
 
-    <!-- ══ LEFT PANEL ══ -->
-    <div class="left">
+            <div class="logo-container">
+                <div class="logo-hub">Hub<span class="logo-city">City</span></div>
+                <div class="tagline">La croisée de l'insertion<br>et du networking</div>
+            </div>
 
-      <div class="logo-wrap">
-        <div class="logo">Hub<em>City</em></div>
-        <span class="logo-bar"></span>
-        <div class="tagline">La croisée de l'insertion et du networking</div>
-      </div>
+            <div class="avatar-wrapper">
+                <img
+                    class="avatar-image"
+                    src="data:image/png;base64,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"
+                    alt="Mohamed-Amine Drablia"
+                >
+                <div class="avatar-initials">MA</div>
+            </div>
 
-      <div class="profile">
-        <div class="avatar-ring">
-          <div class="avatar-inner">MA</div>
+            <div class="name-box">
+                <div class="name">Drablia<br><span class="firstname">Mohamed-Amine</span></div>
+                <div class="title">✦ Fondateur de HubCity</div>
+            </div>
+
         </div>
-        <div>
-          <div class="profile-name"><em>Drablia</em> Mohamed&#8209;Amine</div>
-          <div class="profile-role">✦ Fondateur de HubCity</div>
+
+        <!-- Colonne droite : coordonnées -->
+        <div class="info-side">
+
+            <div class="section-title">Coordonnées</div>
+
+            <a href="tel:0652790812" class="info-item">
+                <div class="info-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                </div>
+                <div class="info-details">
+                    <span class="info-label">Téléphone</span>
+                    <span class="info-value">06 52 79 08 12</span>
+                </div>
+            </a>
+
+            <a href="mailto:contact@hub-city.fr" class="info-item">
+                <div class="info-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </div>
+                <div class="info-details">
+                    <span class="info-label">Email Pro</span>
+                    <span class="info-value">contact@hub-city.fr</span>
+                </div>
+            </a>
+
+            <a href="https://hub-city.fr" target="_blank" class="info-item">
+                <div class="info-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                </div>
+                <div class="info-details">
+                    <span class="info-label">Site Web</span>
+                    <span class="info-value">hub-city.fr</span>
+                </div>
+            </a>
+
+            <a href="https://www.linkedin.com" target="_blank" class="info-item">
+                <div class="info-icon">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                        <rect x="2" y="9" width="4" height="12"></rect>
+                        <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                </div>
+                <div class="info-details">
+                    <span class="info-label">LinkedIn</span>
+                    <span class="info-value">Mohamed-Amine Drablia</span>
+                </div>
+            </a>
+
         </div>
-      </div>
+
+        <div class="card-footer">hub-city.fr &bull; &copy; 2026 hubcity</div>
 
     </div>
-
-    <!-- ══ RIGHT PANEL ══ -->
-    <div class="right">
-
-      <div class="right-title">Coordonnées</div>
-
-      <div class="contacts">
-
-        <a class="row" href="tel:+33652790812">
-          <div class="icon">
-            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 3.08 10a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 2 1.25h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L6.09 9a16 16 0 0 0 5.91 5.91l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          </div>
-          <div class="info">
-            <div class="lbl">Téléphone</div>
-            <div class="val">06 52 79 08 12</div>
-          </div>
-          <div class="arrow">›</div>
-        </a>
-
-        <a class="row" href="mailto:contact@hub-city.fr">
-          <div class="icon">
-            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          </div>
-          <div class="info">
-            <div class="lbl">Email pro</div>
-            <div class="val">contact@hub-city.fr</div>
-          </div>
-          <div class="arrow">›</div>
-        </a>
-
-        <a class="row" href="https://hub-city.fr" target="_blank">
-          <div class="icon">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-          </div>
-          <div class="info">
-            <div class="lbl">Site web</div>
-            <div class="val">hub-city.fr</div>
-          </div>
-          <div class="arrow">›</div>
-        </a>
-
-        <a class="row" href="https://www.linkedin.com/in/les-slasheurs-mohamed-amine/" target="_blank">
-          <div class="icon orange">
-            <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          </div>
-          <div class="info">
-            <div class="lbl">LinkedIn</div>
-            <div class="val">Mohamed-Amine Drablia</div>
-          </div>
-          <div class="arrow">›</div>
-        </a>
-
-      </div>
-
-      <div class="btn-wrap">
-        <a class="btn" href="#" onclick="saveContact(event)">
-          <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Enregistrer le contact
-        </a>
-      </div>
-
-      <div class="right-footer">
-        <a href="https://hub-city.fr" target="_blank">hub-city.fr</a> &nbsp;·&nbsp; &copy; 2025 HubCity
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast">Contact enregistré ✓</div>
-
-<script>
-  function saveContact(e) {
-    e.preventDefault();
-    const vcard = [
-      'BEGIN:VCARD','VERSION:3.0',
-      'FN:Mohamed-Amine Drablia',
-      'N:Drablia;Mohamed-Amine;;;',
-      'ORG:HubCity',
-      'TITLE:Fondateur',
-      'TEL;TYPE=CELL:+33652790812',
-      'EMAIL;TYPE=WORK:contact@hub-city.fr',
-      'URL:https://hub-city.fr',
-      'X-SOCIALPROFILE;type=linkedin:https://www.linkedin.com/in/les-slasheurs-mohamed-amine/',
-      "NOTE:La croisée de l'insertion et du networking",
-      'END:VCARD'
-    ].join('\r\n');
-    const blob = new Blob([vcard],{type:'text/vcard;charset=utf-8'});
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href=url; a.download='Mohamed-Amine-Drablia-HubCity.vcf';
-    document.body.appendChild(a); a.click();
-    document.body.removeChild(a); URL.revokeObjectURL(url);
-    const t=document.getElementById('toast');
-    t.classList.add('show');
-    setTimeout(()=>t.classList.remove('show'),3000);
-  }
-</script>
 
 </body>
 </html>
